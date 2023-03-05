@@ -42,19 +42,13 @@ use std::{fmt::Display, str};
 
 use crate::chunk_type::ChunkType;
 use anyhow::{anyhow, Error, Result};
-use crc::{Algorithm, Crc, CRC_32_ISO_HDLC, CRC_32_MPEG_2};
+use crc::{Crc, CRC_32_ISO_HDLC};
 
-const CRC_ALGO: Algorithm<u32> = Algorithm {
-    width: 32,
-    poly: 0x04c11db7,
-    init: 0xffffffff,
-    refin: true,
-    refout: true,
-    xorout: 0xffffffff,
-    check: 0xcbf43926,
-    residue: 0xdebb20e3,
-};
-
+///  PNG files are essentially just a list of "chunks", each containing their
+/// own data. Each chunk has a type that can be represented as a 4 character
+/// string. There are standard chunk types for things like image data, but
+/// there's no rule that would prevent you from inserting your own chunks with
+/// whatever data you want.
 pub struct Chunk {
     chunk_type: ChunkType,
     data: Vec<u8>,
@@ -63,6 +57,7 @@ pub struct Chunk {
 
 impl Chunk {
     fn new(chunk_type: ChunkType, data: Vec<u8>) -> Self {
+        // http://justsolve.archiveteam.org/wiki/CRC-32
         let crc = Crc::<u32>::new(&CRC_32_ISO_HDLC);
         Chunk {
             chunk_type,
@@ -100,7 +95,14 @@ impl Chunk {
         }
     }
     fn as_bytes(&self) -> Vec<u8> {
-        Vec::new()
+        self.length()
+            .to_be_bytes()
+            .iter()
+            .chain(self.chunk_type.bytes().iter())
+            .chain(self.data.iter())
+            .chain(self.crc().to_be_bytes().iter())
+            .copied()
+            .collect()
     }
 }
 
