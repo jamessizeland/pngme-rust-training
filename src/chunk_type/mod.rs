@@ -61,11 +61,11 @@ impl std::fmt::Display for ChunkType {
 }
 impl ChunkType {
     /// Get the raw bytes of this chunk type
-    fn bytes(&self) -> [u8; 4] {
+    pub fn bytes(&self) -> [u8; 4] {
         self.raw
     }
     /// Check if chunk is valid ASCII and valid PNG
-    fn is_valid(&self) -> bool {
+    pub fn is_valid(&self) -> bool {
         self.bytes().iter().fold(true, |valid, byte| {
             (byte.is_ascii_lowercase() || byte.is_ascii_uppercase()) && valid
         }) && self.is_reserved_bit_valid()
@@ -83,7 +83,7 @@ impl ChunkType {
     /// unknown chunk in which the ancillary bit is 0 must indicate to the
     /// user that the image contains information it cannot safely interpret.
     /// The image header chunk (IHDR) is an example of a critical chunk.
-    fn is_critical(&self) -> bool {
+    pub fn is_critical(&self) -> bool {
         let byte = self.bytes()[0];
         byte >> 5 & 1 == 0
     }
@@ -98,7 +98,7 @@ impl ChunkType {
     /// private-chunk property bit, since it has no functional significance;
     /// it is simply an administrative convenience to ensure that public and
     /// private chunk names will not conflict.
-    fn is_public(&self) -> bool {
+    pub fn is_public(&self) -> bool {
         let byte = self.bytes()[1];
         byte >> 5 & 1 == 0
     }
@@ -112,7 +112,7 @@ impl ChunkType {
     /// as some future version of the PNG specification could define a meaning
     /// for this bit. It is sufficient to treat a chunk with a lowercase third
     /// letter in the same way as any other unknown chunk type.)
-    fn is_reserved_bit_valid(&self) -> bool {
+    pub fn is_reserved_bit_valid(&self) -> bool {
         let byte = self.bytes()[2];
         byte >> 5 & 1 == 0
     }
@@ -122,7 +122,7 @@ impl ChunkType {
     /// needed by PNG editors (programs that modify PNG files). This bit
     /// defines the proper handling of unrecognized chunks in a file that is
     /// being modified.
-    fn is_safe_to_copy(&self) -> bool {
+    pub fn is_safe_to_copy(&self) -> bool {
         let byte = self.bytes()[3];
         byte >> 5 & 1 == 1
     }

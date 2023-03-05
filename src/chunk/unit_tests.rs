@@ -27,8 +27,8 @@ fn test_new_chunk() {
         .as_bytes()
         .to_vec();
     let chunk = Chunk::new(chunk_type, data);
-    assert_eq!(chunk.length(), 42);
-    assert_eq!(chunk.crc(), 2882656334);
+    assert_eq!(chunk.length(), 42, "length");
+    assert_eq!(chunk.crc(), 2882656334, "crc");
 }
 
 #[test]
