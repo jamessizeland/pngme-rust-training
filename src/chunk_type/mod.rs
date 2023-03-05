@@ -5,11 +5,11 @@
 //! character strings. For example, it would not be correct to represent the
 //! type code IDAT by the EBCDIC equivalents of those letters.
 
-use anyhow::{anyhow, Error};
-use std::str;
-
 #[cfg(test)]
 mod unit_tests;
+
+use anyhow::{anyhow, Error};
+use std::str;
 
 /// Chunk type codes are assigned so that a decoder can determine some
 /// properties of a chunk even when it does not recognize the type code.
