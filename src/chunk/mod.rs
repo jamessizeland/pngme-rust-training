@@ -106,9 +106,25 @@ impl Chunk {
 
 impl TryFrom<&Vec<u8>> for Chunk {
     type Error = Error;
-
+    /// Take a byte vec and split out the chunk elements
     fn try_from(value: &Vec<u8>) -> std::result::Result<Self, Self::Error> {
-        todo!()
+        let (start, rest) = value.split_at(8);
+        let length_bytes: [u8; 4] = start[0..4].try_into()?;
+        let length: usize = u32::from_be_bytes(length_bytes).try_into()?;
+        let chunk_type_bytes: [u8; 4] = start[4..8].try_into()?;
+        let chunk_type = ChunkType::try_from(chunk_type_bytes)?;
+        let (data, rest) = rest.split_at(length);
+        let chunk = Chunk::new(chunk_type, data.try_into()?);
+        let crc_bytes: [u8; 4] = rest[0..4].try_into()?;
+        let crc = u32::from_be_bytes(crc_bytes);
+        if crc != chunk.crc() {
+            return Err(anyhow!(
+                "crc input {} didn't match calculated {}",
+                crc,
+                chunk.crc()
+            ));
+        };
+        Ok(chunk)
     }
 }
 
