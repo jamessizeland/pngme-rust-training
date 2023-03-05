@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "editorconfig.editorconfig",
+    "dkundel.vscode-new-file",
+    "aaron-bond.better-comments",
+    "shd101wyy.markdown-preview-enhanced",
+    "equinusocio.vsc-material-theme-icons",
+    "esbenp.prettier-vscode",
+    "visualstudioexptteam.vscodeintellicode",
+    "oderwat.indent-rainbow",
+    "alefragnani.bookmarks",
+    "tamasfe.even-better-toml",
+    "rust-lang.rust-analyzer"
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  // force format on save to be enabled for this project
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file"
+}
