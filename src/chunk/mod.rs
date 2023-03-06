@@ -56,7 +56,7 @@ pub struct Chunk {
 }
 
 impl Chunk {
-    fn new(chunk_type: ChunkType, data: Vec<u8>) -> Self {
+    pub fn new(chunk_type: ChunkType, data: Vec<u8>) -> Self {
         // http://justsolve.archiveteam.org/wiki/CRC-32
         let crc = Crc::<u32>::new(&CRC_32_ISO_HDLC);
         Chunk {
@@ -70,13 +70,13 @@ impl Chunk {
     /// chunk type code, or the CRC. Zero is a valid length. Although encoders
     /// and decoders should treat the length as unsigned, its value must not
     /// exceed 231 bytes.
-    fn length(&self) -> u32 {
+    pub fn length(&self) -> u32 {
         self.data.len().try_into().unwrap()
     }
-    fn chunk_type(&self) -> &ChunkType {
+    pub fn chunk_type(&self) -> &ChunkType {
         &self.chunk_type
     }
-    fn data(&self) -> &[u8] {
+    pub fn data(&self) -> &[u8] {
         &self.data
     }
     /// A 4-byte CRC (Cyclic Redundancy Check) calculated on the preceding
@@ -88,13 +88,13 @@ impl Chunk {
             [self.chunk_type.bytes().to_vec(), self.data.clone()].concat();
         self.crc.checksum(&evaluation_bytes)
     }
-    fn data_as_string(&self) -> Result<String> {
+    pub fn data_as_string(&self) -> Result<String> {
         match str::from_utf8(self.data()) {
             Ok(s) => Ok(s.to_string()),
             Err(err) => Err(err.into()),
         }
     }
-    fn as_bytes(&self) -> Vec<u8> {
+    pub fn as_bytes(&self) -> Vec<u8> {
         self.length()
             .to_be_bytes()
             .iter()
