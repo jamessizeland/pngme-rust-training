@@ -21,8 +21,6 @@ fn testing_png() -> Png {
 }
 
 fn chunk_from_strings(chunk_type: &str, data: &str) -> Result<Chunk> {
-    use std::str::FromStr;
-
     let chunk_type = ChunkType::from_str(chunk_type)?;
     let data: Vec<u8> = data.bytes().collect();
 
