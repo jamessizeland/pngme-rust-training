@@ -110,11 +110,24 @@ impl TryFrom<&Vec<u8>> for Chunk {
     type Error = Error;
     /// Take a byte vec and split out the chunk elements
     fn try_from(value: &Vec<u8>) -> std::result::Result<Self, Self::Error> {
+        if value.len() < 8 {
+            return Err(anyhow!(
+                "not at least 8 bytes left to parse. Array len: {}",
+                value.len()
+            ));
+        }
         let (start, rest) = value.split_at(8);
         let length_bytes: [u8; 4] = start[0..4].try_into()?;
         let length: usize = u32::from_be_bytes(length_bytes).try_into()?;
         let chunk_type_bytes: [u8; 4] = start[4..8].try_into()?;
         let chunk_type = ChunkType::try_from(chunk_type_bytes)?;
+        if length >= rest.len() {
+            return Err(anyhow!(
+                "not enough bytes left to parse. Length: {length}, rest: {}, array len: {}",
+                rest.len(),
+                value.len()
+            ));
+        };
         let (data, rest) = rest.split_at(length);
         let chunk = Chunk::new(chunk_type, data.try_into()?);
         let crc_bytes: [u8; 4] = rest[0..4].try_into()?;

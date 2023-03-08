@@ -33,7 +33,7 @@ impl TryFrom<&[u8]> for Png {
         let mut index = 8;
         let mut png = Png::from_chunks(Default::default());
         loop {
-            println!("{}", index);
+            println!("index: {} value len {}", index, value.len());
             let chunk_vec: Vec<u8> = value[index..].try_into()?;
             match Chunk::try_from(&chunk_vec) {
                 Ok(chunk) => {
@@ -44,7 +44,10 @@ impl TryFrom<&[u8]> for Png {
                     }
                     png.append_chunk(chunk);
                 }
-                Err(_) => break,
+                Err(err) => {
+                    println!("Oops {}", err);
+                    break;
+                }
             };
         }
         Ok(png)
@@ -89,9 +92,12 @@ impl Png {
             .find(|&chunk| format!("{}", chunk.chunk_type()) == chunk_type)
     }
     fn as_bytes(&self) -> Vec<u8> {
-        self.chunks.iter().fold(Vec::new(), |mut b, chunk| {
-            b.append(&mut chunk.as_bytes());
-            b
-        })
+        // let mut bytes: Vec<u8> = ;
+        self.chunks
+            .iter()
+            .fold(Png::STANDARD_HEADER.to_vec(), |mut b, chunk| {
+                b.append(&mut chunk.as_bytes());
+                b
+            })
     }
 }
