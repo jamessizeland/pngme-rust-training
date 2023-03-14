@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod unit_tests;
 
-use std::{fmt::Display, str::FromStr};
+use std::fmt::Display;
 
-use crate::{chunk::Chunk, chunk_type::ChunkType};
+use crate::chunk::Chunk;
 use anyhow::{anyhow, Error, Result};
 
 struct Png {

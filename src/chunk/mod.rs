@@ -147,7 +147,7 @@ impl Display for Chunk {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.data_as_string() {
             Ok(s) => write!(f, "{s}"),
-            Err(err) => write!(f, "{}", err.to_string()),
+            Err(err) => write!(f, "{err}",),
         }
     }
 }
